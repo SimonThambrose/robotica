@@ -14,6 +14,7 @@ int rightDirection = 7;  //Motor right direction   0-255
 
 
 void setup() {
+  TCCR2B = TCCR2B & B11111000 | B00000111;
   Serial.begin(9600);
 
   //SETUP IR SENSOR
