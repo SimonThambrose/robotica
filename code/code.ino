@@ -17,7 +17,7 @@ bool kickstart = false;
 void setup() {
   Serial.begin(9600);
 
-  //Setup IR Sensor
+  //SETUP IR SENSOR
   pinMode(farLeftSensor, INPUT);
   pinMode(leftSensor, INPUT);
   pinMode(midSensor, INPUT);
@@ -44,73 +44,70 @@ void loop() {
   // String str = String(sens[0]) + " " + String(sens[1]) + " " + String(sens[2]) + " " + String(sens[3]) + " " + String(sens[4]);
   // Serial.println(str);
 
-  //Straight
+  //STRAIGHT
   if (sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) {
     straight();
   }
 
-  //Turn around
+  //TURN AROUND
   else if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     turnAround();
   }
 
-  //Left
+  //LEFT
   else if (!sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
     left();
   }
 
-  //Right
+  //RIGHT
   else if (sens[0] && sens[1] && sens[2] && !sens[3] && !sens[4]) {
     right();
   }
 
-  //Left or right
+  //LEFT OR RIGHT
   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
     leftRight();
   }
 
-  //Straight or left
+  //STRAIGHT OR LEFT
   else if (!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
     straightLeft();
   }
 
-  //Straight or right
+  //STRAIGHT OR RIGHT
   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) {
     straightRight();
   }
 
-  //Light left
+  //SMALL ADJUSTMENT LEFT
   else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
     lightLeft();
   }
 
-  //Strong left
+  //STRONG ADJUSTMENT LEFT
   else if (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
     strongLeft();
   }
 
-  //Light Right
+  //SMALL ADJUSTMENT RIGHT
   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) {
     lightRight();
   }
 
-  //Strong right
+  //STRONG ADJUSTMENT RIGHT
   else if (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4]) {
     strongRight();
   }
 
-  //Finish
+  //FINISH
   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
     finish();
   }
 }
 
 
-
-
-
 //Functions
-//Kickstart-------------------------------------------
+//KICKSTART
 void kickStart() {
   digitalWrite(rightDirection, LOW);
   analogWrite(rightSpeed, 255);
@@ -119,7 +116,8 @@ void kickStart() {
   delay(100);
   kickstart = true;
 }
-//Straight-------------------------------------------
+
+//STRAIGHT
 void straight() {
   digitalWrite(rightDirection, LOW);
   analogWrite(rightSpeed, 40);
@@ -131,7 +129,7 @@ void straight() {
   delay(25);
 }
 
-//Turn around----------------------------------------
+//TURN AROUND
 void turnAround() {
   digitalWrite(rightDirection, LOW);
   analogWrite(rightSpeed, 40);
@@ -143,7 +141,7 @@ void turnAround() {
   delay(25);
 }
 
-//Left-----------------------------------------------
+//LEFT
 void left() {
   digitalWrite(rightDirection, HIGH);
   analogWrite(rightSpeed, 40);
@@ -155,7 +153,7 @@ void left() {
   delay(25);
 }
 
-//Right---------------------------------------------
+//RIGHT
 void right() {
   digitalWrite(rightDirection, LOW);
   analogWrite(rightSpeed, 40);
@@ -167,7 +165,7 @@ void right() {
   delay(25);
 }
 
-//Finish---------------------------------------------
+//FINISH
 void finish() {
   digitalWrite(rightSpeed, 0);
 
