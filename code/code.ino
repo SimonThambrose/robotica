@@ -15,6 +15,7 @@ int leftDirection = 13;
 bool kickstart = false;
 
 void setup() {
+  TCCR2B = TCCR2B & B11111000 | B00000111;
   Serial.begin(9600);
 
   //SETUP IR SENSOR
