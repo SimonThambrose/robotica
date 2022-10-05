@@ -24,10 +24,10 @@ void setup() {
   pinMode(farRightSensor, INPUT);
 
   //SETUP RIGHT MOTOR
-  pinMode(rightDirection, OUTPUT);  //INITIATES DIRECTION OF RIGHT MOTOR
+  pinMode(rightDirection, OUTPUT);  //INITIATES DIRECTION OF RIGHT MOTOR. LOW TO MOVE FORWARD
 
   //SETUP LEFT MOTOR
-  pinMode(leftDirection, OUTPUT);  //INITIATES DIRECTION OF LEFT MOTOR
+  pinMode(leftDirection, OUTPUT);  //INITIATES DIRECTION OF LEFT MOTOR. LOW TO MOVE FORWARD
 }
 
 
