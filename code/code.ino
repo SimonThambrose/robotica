@@ -1,107 +1,107 @@
-//Int IR Sensor
+//INT FRONT IR SENSOR
 const int farLeftSensor = A0;
 const int leftSensor = A1;
 const int midSensor = A2;
 const int rightSensor = A3;
 const int farRightSensor = A4;
 
-int leftDirection = 4; //Motor left direction
-int leftSpeed = 5; //Motor left speed
-int rightSpeed = 6; //Motor right speed
-int rightDirection = 7; //Motor right direction
+//INT MOTORS
+int leftDirection = 4;   //Motor left direction     HIGH/LOW
+int leftSpeed = 5;       //Motor left speed             0-255
+int rightSpeed = 6;      //Motor right speed           HIGH/LOW
+int rightDirection = 7;  //Motor right direction   0-255
+
+
 
 void setup() {
-
   Serial.begin(9600);
 
-  //Setup IR Sensor
+  //SETUP IR SENSOR
   pinMode(farLeftSensor, INPUT);
   pinMode(leftSensor, INPUT);
   pinMode(midSensor, INPUT);
   pinMode(rightSensor, INPUT);
   pinMode(farRightSensor, INPUT);
 
-  //Setup right engine
-  pinMode(rightDirection, OUTPUT); //Initiates direction right motor. LOW to move forward
+  //SETUP RIGHT MOTOR
+  pinMode(rightDirection, OUTPUT);  //INITIATES DIRECTION OF RIGHT MOTOR
 
-  //Setup left engine
-  pinMode(leftDirection, OUTPUT);  //Initiates direction left motor. HIGH to move forward LOW to move backward
+  //SETUP LEFT MOTOR
+  pinMode(leftDirection, OUTPUT);  //INITIATES DIRECTION OF LEFT MOTOR
 }
 
-void loop() {
 
-  int sens [] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
+
+void loop() {
+  int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
 
   String str = String(sens[0]) + " " + String(sens[1]) + " " + String(sens[2]) + " " + String(sens[3]) + " " + String(sens[4]);
   Serial.println(str);
 
-  //Straight
+  //STRAIGHT
   if (sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) {
     straight();
   }
 
-  //Turn around
+  //TURN AROUND
   else if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     turnAround();
   }
 
-  //Left
+  //LEFT
   else if (!sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
     left();
   }
 
-  //Right
+  //RIGHT
   else if (sens[0] && sens[1] && sens[2] && !sens[3] && !sens[4]) {
     right();
   }
 
-  //Left or right
+  //LEFT OR RIGHT
   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
     leftRight();
   }
 
-  //Straight or left
+  //STRAIGHT OR LEFT
   else if (!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
     straightLeft();
   }
 
-  //Straight or right
+  //STRAIGHT OR RIGHT
   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) {
     straightRight();
   }
 
-  //Light left
+  //SMALL ADJUSTMENT LEFT
   else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
     lightLeft();
   }
 
-  //Strong left
+  //STRONG ADJUSTMENT LEFT
   else if (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
     strongLeft();
   }
 
-  //Light Right
+  //SMALL ADJUSTMENT RIGHT
   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) {
     lightRight();
   }
 
-  //Strong right
+  //STRONG ADJUSTMENT RIGHT
   else if (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4]) {
     strongRight();
   }
 
-  //Finish
+  //FINISH
   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
     finish();
-  } 
+  }
 }
 
 
-
-
-
 //Functions
-//Straight-------------------------------------------
+//STRAIGHT
 void straight() {
   digitalWrite(rightDirection, HIGH);
   analogWrite(rightSpeed, 75);
@@ -113,7 +113,7 @@ void straight() {
   delay(25);
 }
 
-//Turn around----------------------------------------
+//TURN AROUND
 void turnAround() {
   digitalWrite(rightDirection, HIGH);
   analogWrite(rightSpeed, 75);
@@ -125,7 +125,7 @@ void turnAround() {
   delay(25);
 }
 
-//Left-----------------------------------------------
+//LEFT
 void left() {
   digitalWrite(rightDirection, LOW);
   analogWrite(rightSpeed, 75);
@@ -137,7 +137,7 @@ void left() {
   delay(25);
 }
 
-//Right---------------------------------------------
+//RIGHT
 void right() {
   digitalWrite(rightDirection, HIGH);
   analogWrite(rightSpeed, 75);
@@ -149,19 +149,19 @@ void right() {
   delay(25);
 }
 
-//Left or right-------------------------------------
+//LeEFT OR RIGHT
 void leftRight() {
   digitalWrite(rightDirection, LOW);
   digitalWrite(rightSpeed, 25);
 
   digitalWrite(leftDirection, LOW);
   digitalWrite(leftSpeed, 25);
-  
+
   Serial.println("Left or right");
   delay(25);
 }
 
-//Straight or left----------------------------------
+//STRAIGHT OR LEFT
 void straightLeft() {
   digitalWrite(rightDirection, HIGH);
   digitalWrite(rightSpeed, 25);
@@ -173,7 +173,7 @@ void straightLeft() {
   delay(25);
 }
 
-//Straight or right---------------------------------
+//STRAIGHT OR RIGHT
 void straightRight() {
 
   digitalWrite(rightDirection, HIGH);
@@ -186,7 +186,7 @@ void straightRight() {
   delay(25);
 }
 
-//Light left-----------------------------------------
+//SMALL ADJUSTMENT LEFT
 void lightLeft() {
   digitalWrite(rightDirection, HIGH);
   digitalWrite(rightSpeed, 35);
@@ -198,7 +198,7 @@ void lightLeft() {
   delay(25);
 }
 
-//Strong left----------------------------------------
+//STRONG ADJUSTMENT LEFT
 void strongLeft() {
   digitalWrite(rightDirection, HIGH);
   digitalWrite(rightSpeed, 45);
@@ -210,7 +210,7 @@ void strongLeft() {
   delay(25);
 }
 
-//Light right----------------------------------------
+//SMALL ADJUSTMENT RIGHT
 void lightRight() {
   digitalWrite(rightDirection, HIGH);
   digitalWrite(rightSpeed, 25);
@@ -222,7 +222,7 @@ void lightRight() {
   delay(25);
 }
 
-//Strong right---------------------------------------
+//STRONG ADJUSTMENT RIGHT
 void strongRight() {
   digitalWrite(rightDirection, HIGH);
   digitalWrite(rightSpeed, 25);
@@ -234,7 +234,7 @@ void strongRight() {
   delay(25);
 }
 
-//Finish---------------------------------------------
+//FINISH
 void finish() {
   digitalWrite(rightDirection, HIGH);
   digitalWrite(rightSpeed, 0);
