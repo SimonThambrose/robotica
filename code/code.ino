@@ -1,177 +1,294 @@
-// IR Sensor ports
+//IR Sensor ports
 const int farLeftSensor = A0;
 const int leftSensor = A1;
 const int midSensor = A2;
 const int rightSensor = A3;
 const int farRightSensor = A4;
 
-// Motor ports
-int rightDirection = 12;
+//Motor ports
+int leftDirection = 12;
 int rightSpeed = 3;
 int leftSpeed = 11;
-int leftDirection = 13;
+int rightDirection = 13;
 
-// Kick start motor boolean
+//Kickstart motor boolean
 bool kickstart = false;
+
+//Speed of the robot
+int speed = 22;
+
+//Speed in corners
+int cornerSpeed = 30;
+
+//Choices for reversing/turning around etc
+int timesReversed = 0;
 
 void setup() {
   TCCR2B = TCCR2B & B11111000 | B00000111;
   Serial.begin(9600);
 
-  //SETUP IR SENSOR
+  //Setup IR sensor
   pinMode(farLeftSensor, INPUT);
   pinMode(leftSensor, INPUT);
   pinMode(midSensor, INPUT);
   pinMode(rightSensor, INPUT);
   pinMode(farRightSensor, INPUT);
 
-  //Setup right engine
-  pinMode(rightDirection, OUTPUT); // Initiates direction right motor. LOW to move forward, HIGH to move backwards.
-  pinMode(rightSpeed, OUTPUT); // Initiates power value right motor (25%=64; 50%=127; 75% = 191; 100%=255).
+  //Setup right motor
+  pinMode(leftDirection, OUTPUT); // Initiates direction right motor. LOW to move forward, HIGH to reverse.
+  pinMode(rightSpeed, OUTPUT); // Initiates power value right motor (speed%=64; 50%=127; 75% = 191; 100%=speed5).
 
-  //Setup left engine
-  pinMode(leftDirection, OUTPUT);  // Initiates direction left motor. LOW to move forward, HIGH to move backwards.
-  pinMode(leftSpeed, OUTPUT); // Initiates power value left motor (25%=64; 50%=127; 75% = 191; 100%=255).
+  //Setup left motor
+  pinMode(rightDirection, OUTPUT);  // Initiates direction left motor. LOW to move forward, HIGH to reverse
+  pinMode(leftSpeed, OUTPUT); // Initiates power value left motor (speed%=64; 50%=127; 75% = 191; 100%=speed5).
 }
 
 void loop() {
   int sens [] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
 
-  if (!kickstart) {
-    kickStart();
-  }
+  // if (!kickstart) {
+  //   kickStart();
+  // }
 
   // -- Test for sensor output values --
   // String str = String(sens[0]) + " " + String(sens[1]) + " " + String(sens[2]) + " " + String(sens[3]) + " " + String(sens[4]);
   // Serial.println(str);
 
-  //STRAIGHT
-  if (sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) {
+  //Straight
+  if ((sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
     straight();
   }
 
-  //TURN AROUND
+  //Reverse or Turn around
   else if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     turnAround();
   }
 
-  //LEFT
-  else if (!sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
+  //Left
+  else if ((!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) || (!sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) || (!sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
     left();
   }
 
-  //RIGHT
-  else if (sens[0] && sens[1] && sens[2] && !sens[3] && !sens[4]) {
+  //Right
+  else if ((sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) || (sens[0] && sens[1] && sens[2] && !sens[3] && !sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4])) {
     right();
   }
 
-  //LEFT OR RIGHT
-  else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
-    leftRight();
-  }
+//   //Left or right
+//   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
+//     leftRight();
+//   }
 
-  //STRAIGHT OR LEFT
-  else if (!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
-    straightLeft();
-  }
+//   //Straight or left
+//   else if (!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
+//     straightLeft();
+//   }
 
-  //STRAIGHT OR RIGHT
-  else if (sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) {
-    straightRight();
-  }
+//   //Straight or right
+//   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) {
+//     straightRight();
+//   }
 
-  //SMALL ADJUSTMENT LEFT
+  //Small adjustment left
   else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
     lightLeft();
   }
 
-  //STRONG ADJUSTMENT LEFT
+  //Strong adjustment left
   else if (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
     strongLeft();
   }
 
-  //SMALL ADJUSTMENT RIGHT
+  //Small adjustment right
   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) {
     lightRight();
   }
 
-  //STRONG ADJUSTMENT RIGHT
+  //Strong adjustment right
   else if (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4]) {
     strongRight();
   }
 
-  //FINISH
-  else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
-    finish();
+//   //Finish
+//   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
+//     finish();
+//   }
+
+    else {
+      stop();
+    }
+}
+
+
+// //Functions
+// //Kickstart
+// void kickStart() {
+//   digitalWrite(leftDirection, LOW);
+//   analogWrite(rightSpeed, speed5);
+//   digitalWrite(rightDirection, LOW);
+//   analogWrite(leftSpeed, speed5);
+//   delay(10);
+//   kickstart = true;
+// }
+
+//Straight
+void straight() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, speed);
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, speed);
+
+  Serial.println("Straight");
+  delay(200);
+}
+
+//Reverse or Turn around
+void turnAround() {
+  if (timesReversed < 3) {
+    digitalWrite(leftDirection, HIGH);
+    analogWrite(rightSpeed, speed);
+    digitalWrite(rightDirection, HIGH);
+    analogWrite(leftSpeed, speed);
+    timesReversed ++;
+    Serial.println("Reversing");
+    delay(500);
+  }
+  else {
+    digitalWrite(leftDirection, LOW);
+    analogWrite(rightSpeed, cornerSpeed);
+    digitalWrite(rightDirection, HIGH);
+    analogWrite(leftSpeed, cornerSpeed);
+    timesReversed = 0;
+    Serial.println("Turning around");
+    delay(200);
   }
 }
 
-
-//Functions
-//KICKSTART
-void kickStart() {
-  digitalWrite(rightDirection, LOW);
-  analogWrite(rightSpeed, 255);
-  digitalWrite(leftDirection, LOW);
-  analogWrite(leftSpeed, 255);
-  delay(100);
-  kickstart = true;
-}
-
-//STRAIGHT
-void straight() {
-  digitalWrite(rightDirection, LOW);
-  analogWrite(rightSpeed, 40);
-
-  digitalWrite(leftDirection, LOW);
-  analogWrite(leftSpeed, 40);
-
-  Serial.println("Straight");
-  delay(25);
-}
-
-//TURN AROUND
-void turnAround() {
-  digitalWrite(rightDirection, LOW);
-  analogWrite(rightSpeed, 40);
-
-  digitalWrite(leftDirection, HIGH);
-  analogWrite(leftSpeed, 40);
-
-  Serial.println("Turn Around");
-  delay(25);
-}
-
-//LEFT
+//Left
 void left() {
-  digitalWrite(rightDirection, HIGH);
-  analogWrite(rightSpeed, 40);
-
   digitalWrite(leftDirection, LOW);
-  analogWrite(leftSpeed, 40);
+  analogWrite(rightSpeed, 0);
+
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, cornerSpeed);
 
   Serial.println("Left");
-  delay(25);
+  delay(200);
 }
 
-//RIGHT
+//Right
 void right() {
-  digitalWrite(rightDirection, LOW);
-  analogWrite(rightSpeed, 40);
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, cornerSpeed);
 
-  digitalWrite(leftDirection, HIGH);
-  analogWrite(leftSpeed, 40);
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, 0);
 
   Serial.println("Right");
-  delay(25);
+  delay(200);
 }
 
-//FINISH
-void finish() {
-  digitalWrite(rightSpeed, 0);
+// //Left or right
+// void leftRight() {
+//   digitalWrite(leftDirection, LOW);
+//   analogWrite(rightSpeed, 20);
 
-  digitalWrite(leftSpeed, 0);
+//   digitalWrite(rightDirection, LOW);
+//   analogWrite(leftSpeed, 20);
+  
+//   Serial.println("Left or right");
+//   delay(500);
+// }
 
-  Serial.println("Finish");
-  delay(25);
+// //Straight or left
+// void straightLeft() {
+//   digitalWrite(leftDirection, HIGH);
+//   analogWrite(rightSpeed, 20);
+
+//   digitalWrite(rightDirection, LOW);
+//   analogWrite(leftSpeed, 20);
+
+//   Serial.println("Straight or left");
+//   delay(500);
+// }
+
+// //Straight or right
+// void straightRight() {
+
+//   digitalWrite(leftDirection, HIGH);
+//   analogWrite(rightSpeed, 20);
+
+//   digitalWrite(rightDirection, LOW);
+//   analogWrite(leftSpeed, 20);
+
+//   Serial.println("Straight or right");
+//   delay(500);
+// }
+
+//Small adjustment left
+void lightLeft() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, 0);
+
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, cornerSpeed);
+
+  Serial.println("Small adjustment left");
+  delay(200);
+}
+
+//Strong adjustment left
+void strongLeft() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, 0);
+
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, cornerSpeed);
+
+  Serial.println("Strong adjustment left");
+  delay(200);
+}
+
+//Light adjustment right
+void lightRight() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, cornerSpeed);
+
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, 0);
+
+  Serial.println("Light adjustment right");
+  delay(200);
+}
+
+//Strong adjustment right
+void strongRight() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, cornerSpeed);
+
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, 0);
+
+  Serial.println("Strong adjustment right");
+  delay(200);
+}
+
+// //Finish
+// void finish() {
+//   analogWrite(rightSpeed, 0);
+
+//   analogWrite(leftSpeed, 0);
+
+//   Serial.println("Finish");
+//   delay(1000);
+// }
+
+//Stop
+void stop() {
+  analogWrite(rightSpeed, 0);
+
+  analogWrite(leftSpeed, 0);
+
+  Serial.println("Stop");
+  delay(1000);
 }
