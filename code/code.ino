@@ -206,7 +206,7 @@ void turnAround() {
     digitalWrite(leftDirection, HIGH);
     analogWrite(rightSpeed, speed);
     digitalWrite(rightDirection, HIGH);
-    analogWrite(leftSpeed, speed); ++++695
+    analogWrite(leftSpeed, speed);
     timesReversed ++;
     delay(500);
   }
