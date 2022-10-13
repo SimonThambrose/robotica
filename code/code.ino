@@ -70,10 +70,10 @@ int rightDirection = 13;
 bool kickstart = false;
 
 //Speed of the robot
-int speed = 22;
+int speed = 23;
 
 //Speed in corners
-int cornerSpeed = 30;
+int cornerSpeed = 32;
 
 //Choices for reversing/turning around etc
 int timesReversed = 0;
@@ -111,15 +111,13 @@ void setup() {
 void loop() {
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
 
-  // if (!kickstart) {
-  //   kickStart();
-  // }
-
-  // -- Test for sensor output values --
-  // String str = String(sens[0]) + " " + String(sens[1]) + " " + String(sens[2]) + " " + String(sens[3]) + " " + String(sens[4]);
+//Finished
+  if (finished) {
+    finish();
+  }
 
   //Straight
-  if ((sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
+  else if ((sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
     straight();
   }
 
@@ -137,16 +135,6 @@ void loop() {
   else if ((sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) || (sens[0] && sens[1] && sens[2] && !sens[3] && !sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4])) {
     right();
   }
-
-  //   //Straight or left
-  //   else if (!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
-  //     straightLeft();
-  //   }
-
-  //   //Straight or right
-  //   else if (sens[0] && sens[1] && !sens[2] && !sens[3] && !sens[4]) {
-  //     straightRight();
-  //   }
 
   //Small adjustment left
   else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
@@ -168,13 +156,9 @@ void loop() {
     strongRight();
   }
 
-  //   //Finish
-  //   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
-  //     finish();
-  //   }
-
-  else {
-    stop();
+  //CheckForFinish
+  else if ((!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) && (!finished)) {
+    checkForFinish(sens[0], sens[1], sens[2], sens[3], sens[4]);
   }
 
   if (!finished) {
@@ -199,29 +183,18 @@ void loop() {
 }
 
 // //Functions
-// //Kickstart
-// void kickStart() {
-//   digitalWrite(leftDirection, LOW);
-//   analogWrite(rightSpeed, speed5);
-//   digitalWrite(rightDirection, LOW);
-//   analogWrite(leftSpeed, speed5);
-//   delay(10);
-//   kickstart = true;
-// }
-
 //Straight
 void straight() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, speed);
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, speed);
-
   delay(200);
 }
 
 //Reverse or Turn around
 void turnAround() {
-  if (timesReversed < 3) {
+  if (timesReversed < 1) {
     digitalWrite(leftDirection, HIGH);
     analogWrite(rightSpeed, speed);
     digitalWrite(rightDirection, HIGH);
@@ -234,7 +207,7 @@ void turnAround() {
     digitalWrite(rightDirection, HIGH);
     analogWrite(leftSpeed, cornerSpeed);
     timesReversed = 0;
-    delay(200);
+    delay(1000);
   }
 }
 
@@ -255,24 +228,6 @@ void right() {
   analogWrite(leftSpeed, 0);
   delay(200);
 }
-
-// //Straight or left
-// void straightLeft() {
-//   digitalWrite(leftDirection, HIGH);
-//   analogWrite(rightSpeed, 20);
-//   digitalWrite(rightDirection, LOW);
-//   analogWrite(leftSpeed, 20);
-//   delay(500);
-// }
-
-// //Straight or right
-// void straightRight() {
-//   digitalWrite(leftDirection, HIGH);
-//   analogWrite(rightSpeed, 20);
-//   digitalWrite(rightDirection, LOW);
-//   analogWrite(leftSpeed, 20);
-//   delay(500);
-// }
 
 //Small adjustment left
 void lightLeft() {
@@ -310,18 +265,30 @@ void strongRight() {
   delay(200);
 }
 
-// //Finish
-// void finish() {
-//   analogWrite(rightSpeed, 0);
-//   analogWrite(leftSpeed, 0);
-//   delay(1000);
-// }
+//checkForFinish
+void checkForFinish(bool sens0, bool sens1, bool sens2, bool sens3, bool sens4) {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, speed);
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, speed);
+  delay(1000);
+  if (!sens0 && !sens1 && !sens2 && !sens3 && !sens4) {
+    finish();
+  } else {
+    digitalWrite(leftDirection, HIGH);
+    analogWrite(rightSpeed, speed);
+    digitalWrite(rightDirection, HIGH);
+    analogWrite(leftSpeed, speed);
+    delay(1000);
+    left();
+  }
+}
 
-//Stop
-void stop() {
+//Finish
+void finish() {
   analogWrite(rightSpeed, 0);
   analogWrite(leftSpeed, 0);
-  delay(1000);
+  finished = true;
 }
 
 //Reset 7-segment display
