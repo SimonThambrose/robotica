@@ -25,7 +25,6 @@ int timesReversed = 0;
 
 void setup() {
   TCCR2B = TCCR2B & B11111000 | B00000111;
-  Serial.begin(9600);
 
   //Setup IR sensor
   pinMode(farLeftSensor, INPUT);
@@ -52,7 +51,6 @@ void loop() {
 
   // -- Test for sensor output values --
   // String str = String(sens[0]) + " " + String(sens[1]) + " " + String(sens[2]) + " " + String(sens[3]) + " " + String(sens[4]);
-  // Serial.println(str);
 
   //Straight
   if ((sens[0] && sens[1] && !sens[2] && sens[3] && sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
@@ -138,7 +136,6 @@ void straight() {
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, speed);
 
-  Serial.println("Straight");
   delay(200);
 }
 
@@ -148,9 +145,8 @@ void turnAround() {
     digitalWrite(leftDirection, HIGH);
     analogWrite(rightSpeed, speed);
     digitalWrite(rightDirection, HIGH);
-    analogWrite(leftSpeed, speed);
+    analogWrite(leftSpeed, speed);++++695
     timesReversed ++;
-    Serial.println("Reversing");
     delay(500);
   }
   else {
@@ -159,7 +155,6 @@ void turnAround() {
     digitalWrite(rightDirection, HIGH);
     analogWrite(leftSpeed, cornerSpeed);
     timesReversed = 0;
-    Serial.println("Turning around");
     delay(200);
   }
 }
@@ -168,11 +163,8 @@ void turnAround() {
 void left() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, 0);
-
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, cornerSpeed);
-
-  Serial.println("Left");
   delay(200);
 }
 
@@ -180,11 +172,8 @@ void left() {
 void right() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, cornerSpeed);
-
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, 0);
-
-  Serial.println("Right");
   delay(200);
 }
 
@@ -192,11 +181,8 @@ void right() {
 // void leftRight() {
 //   digitalWrite(leftDirection, LOW);
 //   analogWrite(rightSpeed, 20);
-
 //   digitalWrite(rightDirection, LOW);
 //   analogWrite(leftSpeed, 20);
-  
-//   Serial.println("Left or right");
 //   delay(500);
 // }
 
@@ -204,24 +190,17 @@ void right() {
 // void straightLeft() {
 //   digitalWrite(leftDirection, HIGH);
 //   analogWrite(rightSpeed, 20);
-
 //   digitalWrite(rightDirection, LOW);
 //   analogWrite(leftSpeed, 20);
-
-//   Serial.println("Straight or left");
 //   delay(500);
 // }
 
 // //Straight or right
 // void straightRight() {
-
 //   digitalWrite(leftDirection, HIGH);
 //   analogWrite(rightSpeed, 20);
-
 //   digitalWrite(rightDirection, LOW);
 //   analogWrite(leftSpeed, 20);
-
-//   Serial.println("Straight or right");
 //   delay(500);
 // }
 
@@ -229,11 +208,8 @@ void right() {
 void lightLeft() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, 0);
-
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, cornerSpeed);
-
-  Serial.println("Small adjustment left");
   delay(200);
 }
 
@@ -241,11 +217,8 @@ void lightLeft() {
 void strongLeft() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, 0);
-
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, cornerSpeed);
-
-  Serial.println("Strong adjustment left");
   delay(200);
 }
 
@@ -253,11 +226,8 @@ void strongLeft() {
 void lightRight() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, cornerSpeed);
-
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, 0);
-
-  Serial.println("Light adjustment right");
   delay(200);
 }
 
@@ -265,30 +235,21 @@ void lightRight() {
 void strongRight() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, cornerSpeed);
-
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, 0);
-
-  Serial.println("Strong adjustment right");
   delay(200);
 }
 
 // //Finish
 // void finish() {
 //   analogWrite(rightSpeed, 0);
-
 //   analogWrite(leftSpeed, 0);
-
-//   Serial.println("Finish");
 //   delay(1000);
 // }
 
 //Stop
 void stop() {
   analogWrite(rightSpeed, 0);
-
   analogWrite(leftSpeed, 0);
-
-  Serial.println("Stop");
   delay(1000);
 }
