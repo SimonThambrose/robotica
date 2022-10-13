@@ -20,44 +20,44 @@ char wentDirection = '0';
 bool finished = false;
 
 bool segMode = false;
-int seg[] {A, B, C, D, E, F, G};
+int seg[]{ A, B, C, D, E, F, G };
 byte chars = 34;
 
-byte Chars[34][9] {
-  {'0', 1, 1, 1, 1, 1, 1, 0}, //0
-  {'1', 0, 1, 1, 0, 0, 0, 0}, //1
-  {'2', 1, 1, 0, 1, 1, 0, 1}, //2
-  {'3', 1, 1, 1, 1, 0, 0, 1}, //3
-  {'4', 0, 1, 1, 0, 0, 1, 1}, //4
-  {'5', 1, 0, 1, 1, 0, 1, 1}, //5
-  {'6', 1, 0, 1, 1, 1, 1, 1}, //6
-  {'7', 1, 1, 1, 0, 0, 0, 0}, //7
-  {'8', 1, 1, 1, 1, 1, 1, 1}, //8
-  {'9', 1, 1, 1, 1, 0, 1, 1}, //9
-  {'a', 1, 1, 1, 0, 1, 1, 1}, //A
-  {'b', 0, 0, 1, 1, 1, 1, 1}, //b
-  {'c', 1, 0, 0, 1, 1, 1, 0}, //C
-  {'d', 0, 1, 1, 1, 1, 0, 1}, //d
-  {'e', 1, 0, 0, 1, 1, 1, 1}, //E
-  {'f', 1, 0, 0, 0, 1, 1, 1}, //F
-  {'g', 1, 0, 1, 1, 1, 1, 0}, //G
-  {'h', 0, 1, 1, 0, 1, 1, 1}, //H
-  {'i', 0, 0, 0, 0, 1, 1, 0}, //I
-  {'j', 0, 1, 1, 1, 1, 0, 0}, //J
-  {'l', 0, 0, 0, 1, 1, 1, 0}, //L
-  {'n', 0, 0, 1, 0, 1, 0, 1}, //n
-  {'o', 0, 0, 1, 1, 1, 0, 1}, //o
-  {'p', 1, 1, 0, 0, 1, 1, 1}, //P
-  {'q', 1, 1, 1, 0, 0, 1, 1}, //q
-  {'r', 0, 0, 0, 0, 1, 0, 1}, //r
-  {'s', 1, 0, 1, 1, 0, 1, 1}, //S
-  {'t', 0, 0, 0, 1, 1, 1, 1}, //t
-  {'u', 0, 1, 1, 1, 1, 1, 0}, //U
-  {'y', 0, 1, 1, 1, 0, 1, 1}, //y
-  {'-', 0, 0, 0, 0, 0, 0, 1}, //-
-  {']', 1, 1, 1, 1, 0, 0, 0}, //]
-  {'[', 1, 0, 0, 1, 1, 1, 0}, //[
-  {'_', 0, 0, 0, 1, 0, 0, 0}, //_
+byte Chars[34][9]{
+  { '0', 1, 1, 1, 1, 1, 1, 0 },  //0
+  { '1', 0, 1, 1, 0, 0, 0, 0 },  //1
+  { '2', 1, 1, 0, 1, 1, 0, 1 },  //2
+  { '3', 1, 1, 1, 1, 0, 0, 1 },  //3
+  { '4', 0, 1, 1, 0, 0, 1, 1 },  //4
+  { '5', 1, 0, 1, 1, 0, 1, 1 },  //5
+  { '6', 1, 0, 1, 1, 1, 1, 1 },  //6
+  { '7', 1, 1, 1, 0, 0, 0, 0 },  //7
+  { '8', 1, 1, 1, 1, 1, 1, 1 },  //8
+  { '9', 1, 1, 1, 1, 0, 1, 1 },  //9
+  { 'a', 1, 1, 1, 0, 1, 1, 1 },  //A
+  { 'b', 0, 0, 1, 1, 1, 1, 1 },  //b
+  { 'c', 1, 0, 0, 1, 1, 1, 0 },  //C
+  { 'd', 0, 1, 1, 1, 1, 0, 1 },  //d
+  { 'e', 1, 0, 0, 1, 1, 1, 1 },  //E
+  { 'f', 1, 0, 0, 0, 1, 1, 1 },  //F
+  { 'g', 1, 0, 1, 1, 1, 1, 0 },  //G
+  { 'h', 0, 1, 1, 0, 1, 1, 1 },  //H
+  { 'i', 0, 0, 0, 0, 1, 1, 0 },  //I
+  { 'j', 0, 1, 1, 1, 1, 0, 0 },  //J
+  { 'l', 0, 0, 0, 1, 1, 1, 0 },  //L
+  { 'n', 0, 0, 1, 0, 1, 0, 1 },  //n
+  { 'o', 0, 0, 1, 1, 1, 0, 1 },  //o
+  { 'p', 1, 1, 0, 0, 1, 1, 1 },  //P
+  { 'q', 1, 1, 1, 0, 0, 1, 1 },  //q
+  { 'r', 0, 0, 0, 0, 1, 0, 1 },  //r
+  { 's', 1, 0, 1, 1, 0, 1, 1 },  //S
+  { 't', 0, 0, 0, 1, 1, 1, 1 },  //t
+  { 'u', 0, 1, 1, 1, 1, 1, 0 },  //U
+  { 'y', 0, 1, 1, 1, 0, 1, 1 },  //y
+  { '-', 0, 0, 0, 0, 0, 0, 1 },  //-
+  { ']', 1, 1, 1, 1, 0, 0, 0 },  //]
+  { '[', 1, 0, 0, 1, 1, 1, 0 },  //[
+  { '_', 0, 0, 0, 1, 0, 0, 0 },  //_
 };
 
 //Motor ports
@@ -89,12 +89,12 @@ void setup() {
   pinMode(farRightSensor, INPUT);
 
   //Setup right motor
-  pinMode(leftDirection, OUTPUT); // Initiates direction right motor. LOW to move forward, HIGH to reverse.
-  pinMode(rightSpeed, OUTPUT); // Initiates power value right motor (speed%=64; 50%=127; 75% = 191; 100%=speed5).
+  pinMode(leftDirection, OUTPUT);  // Initiates direction right motor. LOW to move forward, HIGH to reverse.
+  pinMode(rightSpeed, OUTPUT);     // Initiates power value right motor (speed%=64; 50%=127; 75% = 191; 100%=speed5).
 
   //Setup left motor
   pinMode(rightDirection, OUTPUT);  // Initiates direction left motor. LOW to move forward, HIGH to reverse
-  pinMode(leftSpeed, OUTPUT); // Initiates power value left motor (speed%=64; 50%=127; 75% = 191; 100%=speed5).
+  pinMode(leftSpeed, OUTPUT);       // Initiates power value left motor (speed%=64; 50%=127; 75% = 191; 100%=speed5).
 
   //Setup 7-segment display
   pinMode(seg[0], OUTPUT);
@@ -109,7 +109,7 @@ void setup() {
 }
 
 void loop() {
-  int sens [] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
+  int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
 
   // if (!kickstart) {
   //   kickStart();
@@ -176,8 +176,27 @@ void loop() {
   else {
     stop();
   }
-}
 
+  if (!finished) {
+    digitalWrite(rightDisplay, HIGH);  // Turn right display off
+    digitalWrite(leftDisplay, LOW);    // Turn left display on
+    Print(crossingsCounter);
+    delay(5);
+    digitalWrite(leftDisplay, HIGH);  // Turn left display off
+    digitalWrite(rightDisplay, LOW);  // Turn right display on
+    Print(wentDirection);
+    delay(5);
+  } else {
+    digitalWrite(rightDisplay, HIGH);
+    digitalWrite(leftDisplay, LOW);
+    Print('f');
+    delay(5);
+    digitalWrite(leftDisplay, HIGH);
+    digitalWrite(rightDisplay, LOW);
+    Print('i');
+    delay(5);
+  }
+}
 
 // //Functions
 // //Kickstart
@@ -207,10 +226,9 @@ void turnAround() {
     analogWrite(rightSpeed, speed);
     digitalWrite(rightDirection, HIGH);
     analogWrite(leftSpeed, speed);
-    timesReversed ++;
+    timesReversed++;
     delay(500);
-  }
-  else {
+  } else {
     digitalWrite(leftDirection, LOW);
     analogWrite(rightSpeed, cornerSpeed);
     digitalWrite(rightDirection, HIGH);
@@ -218,26 +236,6 @@ void turnAround() {
     timesReversed = 0;
     delay(200);
   }
-}
-
-if (!finished) {
-  digitalWrite(rightDisplay, HIGH); // Turn right display off
-  digitalWrite(leftDisplay, LOW); // Turn left display on
-  Print(crossingsCounter);
-  delay(5);
-  digitalWrite(leftDisplay, HIGH); // Turn left display off
-  digitalWrite(rightDisplay, LOW); // Turn right display on
-  Print(wentDirection);
-  delay(5);
-} else {
-  digitalWrite(rightDisplay, HIGH);
-  digitalWrite(leftDisplay, LOW);
-  Print('f');
-  delay(5);
-  digitalWrite(leftDisplay, HIGH);
-  digitalWrite(rightDisplay, LOW);
-  Print('i');
-  delay(5);
 }
 
 //Left
@@ -337,13 +335,13 @@ void setState(bool mode) {
 void Print(char Char) {
   int charNum = -1;
   setState(segMode);
-  for (int i = 0; i < chars ; i++) {
+  for (int i = 0; i < chars; i++) {
     if (Char == Chars[i][0]) {
       charNum = i;
     }
   }
 
-  if (charNum == -1 ) {
+  if (charNum == -1) {
     for (int i = 0; i <= 6; i++) {
       digitalWrite(seg[i], HIGH);
       delay(100);
@@ -365,7 +363,7 @@ void Print(char Char) {
 //Print int on display
 void Print(int num) {
   setState(segMode);
-  if (num > chars || num < 0 ) {
+  if (num > chars || num < 0) {
     for (int i = 0; i <= 6; i++) {
       digitalWrite(seg[i], HIGH);
       delay(100);
