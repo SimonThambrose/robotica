@@ -1,17 +1,17 @@
 #define A 0
-#define B 1
-#define C 2
-#define D 3
-#define E 4
-#define F 5
-#define G 6
+#define B 5
+#define C 4
+#define D 2
+#define E 8
+#define F 1
+#define G 9
 const int leftDisplay = 7;
-const int rightDisplay = 8;
-int crossingsCounter = 4;
-char wentDirection = 'l';
-bool finished = true;
+const int rightDisplay = 6;
+int crossingsCounter = 1;
+char wentDirection = 'r';
+bool finished = false;
 
-bool segMode = 0;
+bool segMode = false;
 int seg[] {A, B, C, D, E, F, G};
 byte chars = 34;
 
