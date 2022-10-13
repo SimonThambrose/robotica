@@ -138,11 +138,6 @@ void loop() {
     right();
   }
 
-  //   //Left or right
-  //   else if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
-  //     leftRight();
-  //   }
-
   //   //Straight or left
   //   else if (!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
   //     straightLeft();
@@ -262,15 +257,6 @@ void right() {
   analogWrite(leftSpeed, 0);
   delay(200);
 }
-
-// //Left or right
-// void leftRight() {
-//   digitalWrite(leftDirection, LOW);
-//   analogWrite(rightSpeed, 20);
-//   digitalWrite(rightDirection, LOW);
-//   analogWrite(leftSpeed, 20);
-//   delay(500);
-// }
 
 // //Straight or left
 // void straightLeft() {
