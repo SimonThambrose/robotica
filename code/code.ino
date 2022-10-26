@@ -20,10 +20,10 @@ char wentDirection = '0';
 bool finished = false;
 
 bool segMode = false;
-int seg[]{ A, B, C, D, E, F, G };
+int seg[] { A, B, C, D, E, F, G };
 byte chars = 34;
 
-byte Chars[34][9]{
+byte Chars[34][9] {
   { '0', 1, 1, 1, 1, 1, 1, 0 },  //0
   { '1', 0, 1, 1, 0, 0, 0, 0 },  //1
   { '2', 1, 1, 0, 1, 1, 0, 1 },  //2
@@ -66,19 +66,13 @@ int rightSpeed = 3;
 int leftSpeed = 11;
 int rightDirection = 13;
 
-//Kickstart motor boolean
-bool kickstart = false;
-
 //Speed of the robot
-int speed = 23;
-
-//Speed in corners
-int cornerSpeed = 32;
+int speed = 22;
+int cornerSpeed = 30;
+int reverseSpeed = 24;
 
 //Choices for reversing/turning around etc
 int timesReversed = 0;
-
-
 
 void setup() {
   TCCR2B = TCCR2B & B11111000 | B00000111;
@@ -110,8 +104,6 @@ void setup() {
   pinMode(rightDisplay, OUTPUT);
 }
 
-
-
 void loop() {
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
 
@@ -130,26 +122,6 @@ void loop() {
     turnAround();
   }
 
-  //Small adjustment left
-  else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
-    lightLeft();
-  }
-
-  //Strong adjustment left
-  else if (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
-    strongLeft();
-  }
-
-  //Small adjustment right
-  else if (sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) {
-    lightRight();
-  }
-
-  //Strong adjustment right
-  else if (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4]) {
-    strongRight();
-  }
-
   //CheckForLeft
   else if ((!sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) || (!sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) || (!sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
     checkForLeft();
@@ -160,13 +132,32 @@ void loop() {
     checkForRight();
   }
 
+  //Small adjustment left
+  else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
+    left();
+  }
+
+  //Strong adjustment left
+  else if (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
+    left();
+  }
+
+  //Small adjustment right
+  else if (sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) {
+    right();
+  }
+
+  //Strong adjustment right
+  else if (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4]) {
+    right();
+  }
+
   //CheckForFinish
   else if ((!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) && (!finished)) {
     checkForFinish();
   }
 
-
-//Show display when robot is finished
+  //Show display when robot is finished
   if (!finished) {
     digitalWrite(rightDisplay, HIGH);  // Turn right display off
     digitalWrite(leftDisplay, LOW);    // Turn left display on
@@ -188,8 +179,6 @@ void loop() {
   }
 }
 
-
-
 //Functions//
 //Forward
 void forward() {
@@ -202,9 +191,9 @@ void forward() {
 //Backward
 void backward() {
   digitalWrite(leftDirection, HIGH);
-  analogWrite(rightSpeed, speed);
+  analogWrite(rightSpeed, reverseSpeed);
   digitalWrite(rightDirection, HIGH);
-  analogWrite(leftSpeed, speed);
+  analogWrite(leftSpeed, reverseSpeed);
 }
 
 //Left
@@ -239,38 +228,6 @@ void turnAround() {
   }
 }
 
-//Small adjustment left
-void lightLeft() {
-  digitalWrite(leftDirection, LOW);
-  analogWrite(rightSpeed, 0);
-  digitalWrite(rightDirection, LOW);
-  analogWrite(leftSpeed, cornerSpeed);
-}
-
-//Strong adjustment left
-void strongLeft() {
-  digitalWrite(leftDirection, LOW);
-  analogWrite(rightSpeed, 0);
-  digitalWrite(rightDirection, LOW);
-  analogWrite(leftSpeed, cornerSpeed);
-}
-
-//Small adjustment right
-void lightRight() {
-  digitalWrite(leftDirection, LOW);
-  analogWrite(rightSpeed, cornerSpeed);
-  digitalWrite(rightDirection, LOW);
-  analogWrite(leftSpeed, 0);
-}
-
-//Strong adjustment right
-void strongRight() {
-  digitalWrite(leftDirection, LOW);
-  analogWrite(rightSpeed, cornerSpeed);
-  digitalWrite(rightDirection, LOW);
-  analogWrite(leftSpeed, 0);
-}
-
 //Functions to check for crossings or finish//
 //CheckForLeft
 void checkForLeft() {
@@ -278,7 +235,7 @@ void checkForLeft() {
   delay(500);
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
   backward();
-  delay(500);
+  delay(1000);
   if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     left();
     delay(1000);
@@ -300,7 +257,7 @@ void checkForRight() {
   delay(500);
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
   backward();
-  delay(500);
+  delay(1000);
   if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     right();
     delay(1000);
@@ -319,11 +276,11 @@ void checkForRight() {
 //CheckForFinish
 void checkForFinish() {
   forward();
-  delay(1000);
+  delay(500);
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
   backward();
-  delay(1000);
-  if (!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) {
+  delay(500);
+  if ((!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) || (!sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
     finish();
   } else if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     int rnd = random(2);
@@ -349,74 +306,74 @@ void checkForFinish() {
   }
 }
 
-  //Finish
-  void finish() {
-    analogWrite(rightSpeed, 0);
-    analogWrite(leftSpeed, 0);
-    finished = true;
+//Finish
+void finish() {
+  analogWrite(rightSpeed, 0);
+  analogWrite(leftSpeed, 0);
+  finished = true;
+}
+
+//Reset 7-segment display
+void setState(bool mode) {
+  for (int i = 0; i <= 6; i++) {
+    digitalWrite(seg[i], mode);
+  }
+}
+
+//Print char on display
+void Print(char Char) {
+  int charNum = -1;
+  setState(segMode);
+  for (int i = 0; i < chars; i++) {
+    if (Char == Chars[i][0]) {
+      charNum = i;
+    }
   }
 
-  //Reset 7-segment display
-  void setState(bool mode) {
+  if (charNum == -1) {
     for (int i = 0; i <= 6; i++) {
-      digitalWrite(seg[i], mode);
+      digitalWrite(seg[i], HIGH);
+      delay(100);
+      digitalWrite(seg[i], LOW);
+    }
+    for (int i = 0; i <= 2; i++) {
+      delay(100);
+      setState(HIGH);
+      delay(100);
+      setState(LOW);
+    }
+  } else {
+    for (int i = 0; i < 7; i++) {
+      digitalWrite(seg[i], Chars[charNum][i + 1]);
     }
   }
+}
 
-  //Print char on display
-  void Print(char Char) {
-    int charNum = -1;
-    setState(segMode);
-    for (int i = 0; i < chars; i++) {
-      if (Char == Chars[i][0]) {
-        charNum = i;
-      }
+//Print int on display
+void Print(int num) {
+  setState(segMode);
+  if (num > chars || num < 0) {
+    for (int i = 0; i <= 6; i++) {
+      digitalWrite(seg[i], HIGH);
+      delay(100);
+      digitalWrite(seg[i], LOW);
     }
 
-    if (charNum == -1) {
-      for (int i = 0; i <= 6; i++) {
-        digitalWrite(seg[i], HIGH);
-        delay(100);
-        digitalWrite(seg[i], LOW);
-      }
-      for (int i = 0; i <= 2; i++) {
-        delay(100);
-        setState(HIGH);
-        delay(100);
-        setState(LOW);
+    for (int i = 0; i <= 2; i++) {
+      delay(100);
+      setState(HIGH);
+      delay(100);
+      setState(LOW);
+    }
+  } else {
+    if (segMode == 0) {
+      for (int i = 0; i < 7; i++) {
+        digitalWrite(seg[i], Chars[num][i + 1]);
       }
     } else {
       for (int i = 0; i < 7; i++) {
-        digitalWrite(seg[i], Chars[charNum][i + 1]);
+        digitalWrite(seg[i], !Chars[num][i + 1]);
       }
     }
   }
-
-  //Print int on display
-  void Print(int num) {
-    setState(segMode);
-    if (num > chars || num < 0) {
-      for (int i = 0; i <= 6; i++) {
-        digitalWrite(seg[i], HIGH);
-        delay(100);
-        digitalWrite(seg[i], LOW);
-      }
-
-      for (int i = 0; i <= 2; i++) {
-        delay(100);
-        setState(HIGH);
-        delay(100);
-        setState(LOW);
-      }
-    } else {
-      if (segMode == 0) {
-        for (int i = 0; i < 7; i++) {
-          digitalWrite(seg[i], Chars[num][i + 1]);
-        }
-      } else {
-        for (int i = 0; i < 7; i++) {
-          digitalWrite(seg[i], !Chars[num][i + 1]);
-        }
-      }
-    }
-  }
+}
