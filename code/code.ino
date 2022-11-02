@@ -20,10 +20,10 @@ char wentDirection = '0';
 bool finished = false;
 
 bool segMode = false;
-int seg[] { A, B, C, D, E, F, G };
+int seg[]{ A, B, C, D, E, F, G };
 byte chars = 34;
 
-byte Chars[34][9] {
+byte Chars[34][9]{
   { '0', 1, 1, 1, 1, 1, 1, 0 },  //0
   { '1', 0, 1, 1, 0, 0, 0, 0 },  //1
   { '2', 1, 1, 0, 1, 1, 0, 1 },  //2
@@ -132,24 +132,14 @@ void loop() {
     checkForRight();
   }
 
-  //Small adjustment left
-  else if (sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) {
-    left();
+  //adjustment left
+  else if ((sens[0] && !sens[1] && !sens[2] && sens[3] && sens[4]) || (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4])) {
+    adjustLeft();
   }
 
-  //Strong adjustment left
-  else if (sens[0] && !sens[1] && sens[2] && sens[3] && sens[4]) {
-    left();
-  }
-
-  //Small adjustment right
-  else if (sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) {
-    right();
-  }
-
-  //Strong adjustment right
-  else if (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4]) {
-    right();
+  //adjustment right
+  else if ((sens[0] && sens[1] && !sens[2] && !sens[3] && sens[4]) || (sens[0] && sens[1] && sens[2] && !sens[3] && sens[4])) {
+    adjustRight();
   }
 
   //CheckForFinish
@@ -202,10 +192,40 @@ void left() {
   analogWrite(rightSpeed, 0);
   digitalWrite(rightDirection, LOW);
   analogWrite(leftSpeed, cornerSpeed);
+  delay(1000);
+  while ((digitalRead(midSensor)) || (digitalRead(leftSensor))) {
+    digitalWrite(leftDirection, LOW);
+    analogWrite(rightSpeed, 0);
+    digitalWrite(rightDirection, LOW);
+    analogWrite(leftSpeed, cornerSpeed);
+  }
+}
+
+//AdjustLeft
+void adjustLeft() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, 0);
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, cornerSpeed);
 }
 
 //Right
 void right() {
+  digitalWrite(leftDirection, LOW);
+  analogWrite(rightSpeed, cornerSpeed);
+  digitalWrite(rightDirection, LOW);
+  analogWrite(leftSpeed, 0);
+  delay(1000);
+  while ((digitalRead(midSensor)) || (digitalRead(rightSensor))) {
+    digitalWrite(leftDirection, LOW);
+    analogWrite(rightSpeed, cornerSpeed);
+    digitalWrite(rightDirection, LOW);
+    analogWrite(leftSpeed, 0);
+  }
+}
+
+//AdjustRight
+void adjustRight() {
   digitalWrite(leftDirection, LOW);
   analogWrite(rightSpeed, cornerSpeed);
   digitalWrite(rightDirection, LOW);
@@ -216,15 +236,17 @@ void right() {
 void turnAround() {
   if (timesReversed < 1) {
     backward();
+    delay(750);
     timesReversed++;
-    delay(500);
   } else {
-    digitalWrite(leftDirection, LOW);
-    analogWrite(rightSpeed, cornerSpeed);
-    digitalWrite(rightDirection, HIGH);
-    analogWrite(leftSpeed, cornerSpeed);
-    timesReversed = 0;
-    delay(1000);
+    while (digitalRead(midSensor)) {
+      digitalWrite(leftDirection, LOW);
+      analogWrite(rightSpeed, cornerSpeed);
+      digitalWrite(rightDirection, HIGH);
+      analogWrite(leftSpeed, cornerSpeed);
+      timesReversed = 0;
+      wentDirection = '-';
+    }
   }
 }
 
@@ -232,21 +254,19 @@ void turnAround() {
 //CheckForLeft
 void checkForLeft() {
   forward();
-  delay(500);
+  delay(1000);
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
   backward();
-  delay(1000);
+  delay(750);
   if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     left();
-    delay(1000);
   } else {
     int rnd = random(2);
     if (!rnd) {
       forward();
-      delay(500);
+      delay(1000);
     } else {
       left();
-      delay(1000);
     }
   }
 }
@@ -254,21 +274,19 @@ void checkForLeft() {
 //CheckForRight
 void checkForRight() {
   forward();
-  delay(500);
+  delay(1000);
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
   backward();
-  delay(1000);
+  delay(750);
   if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     right();
-    delay(1000);
   } else {
     int rnd = random(2);
     if (!rnd) {
       forward();
-      delay(500);
+      delay(1000);
     } else {
       right();
-      delay(1000);
     }
   }
 }
@@ -276,33 +294,36 @@ void checkForRight() {
 //CheckForFinish
 void checkForFinish() {
   forward();
-  delay(500);
+  delay(750);
   int sens[] = { digitalRead(farLeftSensor), digitalRead(leftSensor), digitalRead(midSensor), digitalRead(rightSensor), digitalRead(farRightSensor) };
   backward();
-  delay(500);
-  if ((!sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4]) || (sens[0] && !sens[1] && !sens[2] && !sens[3] && !sens[4]) || (!sens[0] && !sens[1] && !sens[2] && !sens[3] && sens[4])) {
+  delay(750);
+  if (!sens[1] && !sens[2] && !sens[3]) {
     finish();
   } else if (sens[0] && sens[1] && sens[2] && sens[3] && sens[4]) {
     int rnd = random(2);
     if (!rnd) {
       left();
-      delay(1000);
+      wentDirection = 'l';
     } else {
       right();
-      delay(1000);
+      wentDirection = 'r';
     }
+    crossingsCounter ++;
   } else {
     int rnd = random(3);
     if (rnd == 0) {
       left();
-      delay(1000);
+      wentDirection = 'l';
     } else if (rnd == 1) {
       forward();
-      delay(500);
+      delay(1000);
+      wentDirection = 's';
     } else {
       right();
-      delay(1000);
+      wentDirection = 'r';
     }
+    crossingsCounter ++;
   }
 }
 
